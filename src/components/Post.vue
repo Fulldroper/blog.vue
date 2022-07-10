@@ -23,7 +23,7 @@ export default {
 
 <style scoped>
 .post {
-  margin-top: 40px;
+  margin-top: 55px;
   width: 400px;
   background-color: white;
   padding: 10px;

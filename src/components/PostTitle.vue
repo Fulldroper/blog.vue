@@ -4,11 +4,11 @@
       <div>
         <img class="shadow" :src="avatar" />
       </div>
-      <div class="shadow background">
+      <div class="shadow background noselect">
         {{ nickname }}
       </div>
     </div>
-    <div class="shadow background">
+    <div class="shadow background noselect">
       {{ date }}
     </div>
   </div>
