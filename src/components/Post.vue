@@ -2,17 +2,19 @@
   <div class="post shadow">
    <PostTitle />
    <PostContent />
+   <Audioplayer />
   </div>
 </template>
 
 <script>
 import PostTitle from './PostTitle.vue'
 import PostContent from './PostContent.vue'
+import Audioplayer from './Audioplayer.vue'
 
 export default {
   name: 'app',
   components: {
-    PostTitle, PostContent
+    PostTitle, PostContent, Audioplayer
   }
 }
 </script>

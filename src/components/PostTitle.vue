@@ -22,7 +22,7 @@ export default {
       type: String
     },
     avatar: {
-      default: "https://fulldroper.cfs/src/img/1.png",
+      default: "https://fulldroper.cf/src/img/1.png",
       type: String
     },
     date: {
