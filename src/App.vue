@@ -30,4 +30,8 @@ export default {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
+.alt:hover::after {
+  content: attr(data-desc);
+  opacity: 0.6;
+}
 </style>

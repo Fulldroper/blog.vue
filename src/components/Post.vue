@@ -2,7 +2,10 @@
   <div class="post shadow">
     <PostTitle />
     <PostContent />
-    <Audioplayer />
+    <Audioplayer title="cool song" />
+    <Audioplayer title="cool song 2" />
+    <Audioplayer title="cool song 3" />
+    <Audioplayer title="cool song 4" />
   </div>
 </template>
 

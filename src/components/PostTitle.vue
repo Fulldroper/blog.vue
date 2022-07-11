@@ -8,7 +8,7 @@
         {{ nickname }}
       </div>
     </div>
-    <div class="shadow background noselect">
+    <div class="shadow background noselect alt" :data-desc="time">
       {{ date }}
     </div>
   </div>
@@ -27,6 +27,10 @@ export default {
     },
     date: {
       default: "xx.xx.xxxx",
+      type: String,
+    },
+    time: {
+      default: "xx:xx",
       type: String,
     },
   },
