@@ -1,25 +1,45 @@
 <template>
   <div class="post shadow">
-    <PostTitle />
-    <PostContent />
-    <Audioplayer title="cool song" />
-    <Audioplayer title="cool song 2" />
-    <Audioplayer title="cool song 3" />
-    <Audioplayer title="cool song 4" />
+    <PostTitle
+      :nickname="data.nickname"
+      :avatar="data.avatar"
+      :date="data.date"
+      :time="data.time"
+    />
+    <div
+      v-if="data && data.media && data.media.length && data.media.length > 0"
+    >
+      <div v-for="(content, id) in data.media" :key="id">
+        <MediaContent
+          :type="content.type"
+          :src="content.src"
+          :title="content.title"
+        />
+      </div>
+    </div>
+    <PostContent v-if="data.text" :text="data.text" />
+    <AudioPlayerList :playlist="data.audio" />
   </div>
 </template>
 
 <script>
 import PostTitle from "./PostTitle.vue";
 import PostContent from "./PostContent.vue";
-import Audioplayer from "./Audioplayer.vue";
+import MediaContent from "./MediaContent.vue";
+import AudioPlayerList from "./AudioPlayerList.vue";
 
 export default {
-  name: "app",
+  props: {
+    data: {
+      default: {},
+      type: Object,
+    },
+  },
   components: {
     PostTitle,
     PostContent,
-    Audioplayer,
+    AudioPlayerList,
+    MediaContent,
   },
 };
 </script>

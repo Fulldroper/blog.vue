@@ -8,7 +8,7 @@
         {{ nickname }}
       </div>
     </div>
-    <div class="shadow background noselect alt" :data-desc="time">
+    <div class="shadow background noselect alt" :data-desc="time + ' | '">
       {{ date }}
     </div>
   </div>
@@ -38,6 +38,10 @@ export default {
 </script>
 
 <style scoped>
+.alt:hover::before {
+  content: attr(data-desc);
+  opacity: 0.8;
+}
 .container {
   margin-top: -42px;
   margin-left: 5px;

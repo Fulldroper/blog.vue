@@ -80,11 +80,17 @@
           <div class="title">
             {{ title }}
           </div>
-          <div class="counter noselect alt" :data-desc="'/ ' + audioLength">
-            {{ audioNow }}
+          <div class="counter noselect">
+            {{ isPlay ? audioNow + " / " : "" }} {{ audioLength }}
           </div>
         </div>
-        <div @click="changeAudioCounter" class="timeline" ref="timeline">
+        <div
+          @click="changeAudioCounter"
+          @mousemove="timeCalcDesc"
+          class="timeline mouseTime"
+          ref="timeline"
+          :data-time="cursorTime"
+        >
           <div class="timelinedot" ref="timelinedot"></div>
         </div>
       </div>
@@ -92,7 +98,7 @@
     <audio
       @timeupdate="timeUpdate"
       @loadeddata="countDuration"
-      @ended="isPlay = false"
+      @ended="trackEnded"
       ref="audio"
     >
       <source :src="src" />
@@ -110,10 +116,25 @@ export default {
       isPlay: false,
       audioLength: "00:00",
       audioNow: "00:00",
+      cursorTime: "00:00",
       refs: {},
     };
   },
+  watch: {
+    play: function (now, prev) {
+      if (now !== prev) {
+        this.isPlay = now;
+      }
+    },
+    isPlay: function () {
+      this.$emit(this.val ? "paused" : "playing", this.id);
+    },
+  },
   props: {
+    id: {
+      default: 0,
+      type: Number,
+    },
     src: {
       default: "src/assets/test2.mp3",
       type: String,
@@ -122,8 +143,17 @@ export default {
       default: "Undefined track name",
       type: String,
     },
+    play: {
+      default: false,
+      type: Boolean,
+    },
   },
   methods: {
+    trackEnded() {
+      this.isPlay = false;
+      this.refs.audio.currentTime = 0;
+      this.$emit("end", this.id);
+    },
     changeAudioCounter(e) {
       this.refs.audio.currentTime = Math.trunc(
         ((e.clientX - this.refs.timeline.offsetLeft) /
@@ -159,6 +189,17 @@ export default {
         this[result] = `${fixed(min)}:${fixed(sec)}`;
       }
     },
+    timeCalcDesc(e) {
+      document
+        .querySelector(":root")
+        .style.setProperty("--mouse-x", `${e.clientX - e.target.offsetLeft}px`);
+      const time = Math.trunc(
+        ((e.clientX - this.refs.timeline.offsetLeft) /
+          (this.refs.timeline.clientWidth - 11.5)) *
+          this.refs.audio.duration
+      );
+      this.countDuration(undefined, time, "cursorTime");
+    },
   },
 };
 </script>
@@ -184,6 +225,21 @@ export default {
   border-radius: var(--size);
 
   background-color: rgba(0, 0, 0, 0.2);
+}
+.time {
+  border: var(--size);
+}
+.mouseTime:hover::after {
+  position: relative;
+  left: calc(var(--mouse-x) - 21.5px);
+  top: -36.5px;
+  width: 10px;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  padding: 2px 5px 2px 5px;
+  border-radius: 7.5px;
+  background-color: rgba(211, 211, 211, 0.85);
+  z-index: auto;
+  content: attr(data-time);
 }
 .play > svg {
   width: 15px;
@@ -229,7 +285,7 @@ export default {
   width: 10px;
   height: 10px;
   border-radius: 10px;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.68);
   z-index: auto;
   position: relative;
   top: -3px;
