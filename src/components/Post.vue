@@ -6,17 +6,7 @@
       :date="data.date"
       :time="data.time"
     />
-    <div
-      v-if="data && data.media && data.media.length && data.media.length > 0"
-    >
-      <div v-for="(content, id) in data.media" :key="id">
-        <MediaContent
-          :type="content.type"
-          :src="content.src"
-          :title="content.title"
-        />
-      </div>
-    </div>
+    <MediaContentList :contents="data.media" />
     <PostContent v-if="data.text" :text="data.text" />
     <AudioPlayerList :playlist="data.audio" />
   </div>
@@ -27,6 +17,7 @@ import PostTitle from "./PostTitle.vue";
 import PostContent from "./PostContent.vue";
 import MediaContent from "./MediaContent.vue";
 import AudioPlayerList from "./AudioPlayerList.vue";
+import MediaContentList from "./MediaContentList.vue";
 
 export default {
   props: {
@@ -40,6 +31,7 @@ export default {
     PostContent,
     AudioPlayerList,
     MediaContent,
+    MediaContentList,
   },
 };
 </script>

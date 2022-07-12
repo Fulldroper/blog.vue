@@ -11,9 +11,6 @@
           :ref="`audio${id}`"
         />
       </div>
-      <audio>
-        <source src="" type="" />
-      </audio>
     </div>
   </div>
 </template>
@@ -50,6 +47,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-</style>
