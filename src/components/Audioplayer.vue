@@ -404,11 +404,11 @@ export default {
   background-color: rgba(0, 0, 0, 0.68);
   z-index: auto;
   position: relative;
-  top: -5px;
+  top: -3.42px;
   left: 0px;
 }
 .volume-level-dot {
   top: var(--volume, -5px) !important;
-  left: -2.25px !important;
+  left: -2.26px !important;
 }
 </style>
