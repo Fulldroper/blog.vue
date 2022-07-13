@@ -63,6 +63,10 @@ export default {
               src: "src/assets/test2.mp3",
               title: "lite music",
             },
+            {
+              src: "src/assets/test2.mp3",
+              title: "lite music",
+            },
           ],
         },
         {

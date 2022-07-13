@@ -71,6 +71,7 @@ export default {
 .container > div:first-child > div:first-child > img {
   width: 55px;
   height: 55px;
+  object-fit: cover;
   border-radius: 50px;
   background-color: white;
 }

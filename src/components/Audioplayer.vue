@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="player">
+    <div class="player" @mouseleave="hideVolumeLevel">
       <div @click="togglePlay" class="play">
         <svg
           v-if="!isPlay"
@@ -84,14 +84,75 @@
             {{ isPlay ? audioNow + " / " : "" }} {{ audioLength }}
           </div>
         </div>
-        <div
-          @click="changeAudioCounter"
-          @mousemove="timeCalcDesc"
-          class="timeline mouseTime"
-          ref="timeline"
-          :data-time="cursorTime"
-        >
-          <div class="timelinedot" ref="timelinedot"></div>
+        <div class="flex-line">
+          <div
+            @click="changeAudioCounter"
+            @mousemove="timeCalcDesc"
+            class="timeline mouseTime"
+            ref="timeline"
+            :data-time="cursorTime"
+          >
+            <div class="timelinedot" ref="timelinedot"></div>
+          </div>
+          <div
+            @click="changeVolumeLevel"
+            class="volume-level hiden"
+            ref="volume-level"
+          >
+            <div class="volume-level-dot" ref="volume-level-dot"></div>
+          </div>
+          <div @click="toggleShowVolumeLevel" class="volume">
+            <svg
+              version="1.1"
+              id="Layer_1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              x="0px"
+              y="0px"
+              viewBox="0 0 330 330"
+              style="enable-background: new 0 0 330 330"
+              xml:space="preserve"
+            >
+              <g id="XMLID_531_">
+                <path
+                  id="XMLID_532_"
+                  d="M255,210h-10c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15h10c8.284,0,15-6.716,15-15
+		C270,216.716,263.284,210,255,210z"
+                />
+                <path
+                  id="XMLID_533_"
+                  d="M285,150h-40c-8.284,0-15,6.716-15,15c0,8.284,6.716,15,15,15h40c8.284,0,15-6.716,15-15
+		C300,156.716,293.284,150,285,150z"
+                />
+                <path
+                  id="XMLID_534_"
+                  d="M315,90h-70c-8.284,0-15,6.716-15,15s6.716,15,15,15h70c8.284,0,15-6.716,15-15S323.284,90,315,90z"
+                />
+                <path
+                  id="XMLID_535_"
+                  d="M192.078,31.775c-4.878-2.61-10.796-2.324-15.398,0.744L90.459,90H15c-8.284,0-15,6.716-15,15v120
+		c0,8.284,6.716,15,15,15h75.459l86.221,57.481c2.51,1.673,5.411,2.519,8.321,2.519c2.427,0,4.859-0.588,7.077-1.775
+		c4.877-2.61,7.922-7.693,7.922-13.225V45C200,39.468,196.955,34.385,192.078,31.775z M170,256.972l-66.68-44.453
+		C100.856,210.876,97.961,210,95,210H30v-90h65c2.961,0,5.856-0.876,8.32-2.519L170,73.028V256.972z"
+                />
+              </g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+              <g></g>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -114,6 +175,7 @@ export default {
   data() {
     return {
       isPlay: false,
+      isShowVolumeLevel: false,
       audioLength: "00:00",
       audioNow: "00:00",
       cursorTime: "00:00",
@@ -121,13 +183,10 @@ export default {
     };
   },
   watch: {
-    play: function (now, prev) {
+    volume: function (now, prev) {
       if (now !== prev) {
-        this.isPlay = now;
+        this.$refs.audio.volume = now;
       }
-    },
-    isPlay: function () {
-      this.$emit(this.val ? "paused" : "playing", this.id);
     },
   },
   props: {
@@ -143,15 +202,19 @@ export default {
       default: "Undefined track name",
       type: String,
     },
-    play: {
-      default: false,
-      type: Boolean,
+    volume: {
+      default: 1,
+      type: Number,
     },
   },
   methods: {
-    trackEnded() {
+    stop() {
       this.isPlay = false;
-      this.refs.audio.currentTime = 0;
+      this.$refs.audio.pause();
+      this.$refs.audio.currentTime = 0;
+    },
+    trackEnded() {
+      this.stop();
       this.$emit("end", this.id);
     },
     changeAudioCounter(e) {
@@ -162,7 +225,9 @@ export default {
       );
     },
     togglePlay() {
-      this.isPlay ? this.refs.audio.pause() : this.refs.audio.play();
+      this.isPlay
+        ? this.refs.audio.pause()
+        : (this.refs.audio.play(), this.$emit("play", this.id));
       this.isPlay = !this.isPlay;
     },
     timeUpdate() {
@@ -199,6 +264,30 @@ export default {
           this.refs.audio.duration
       );
       this.countDuration(undefined, time, "cursorTime");
+    },
+    toggleShowVolumeLevel() {
+      if (this.isShowVolumeLevel) {
+        this.hideVolumeLevel();
+      } else {
+        this.showVolumeLevel();
+      }
+    },
+    showVolumeLevel() {
+      this.isShowVolumeLevel = true;
+      this.$refs["volume-level"].classList.remove("hiden");
+    },
+    hideVolumeLevel() {
+      this.isShowVolumeLevel = false;
+      this.$refs["volume-level"].classList.add("hiden");
+    },
+    changeVolumeLevel({ clientY }) {
+      const x3 = this.$refs["volume-level"].offsetHeight,
+        x2 = clientY - this.$refs["volume-level"].getBoundingClientRect().top;
+      this.$refs.audio.volume = (x3 - x2) / x3;
+      document
+        .querySelector(":root")
+        .style.setProperty("--volume", `${x2 - 5}px`);
+      this.$emit("changeVolume", this.$refs.audio.volume);
     },
   },
 };
@@ -269,26 +358,57 @@ export default {
   margin-left: 10px;
 }
 .timeline {
-  width: 100%;
+  width: calc(100% - 20px);
   margin-top: 5px;
   border-radius: 20px;
   height: 4px;
   background-color: rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
+.volume {
+  margin-left: 5px;
+  width: 15px;
+  cursor: pointer;
+  z-index: auto;
+}
+.volume > svg {
+  fill: rgba(0, 0, 0, 0.4);
+}
+.hiden {
+  visibility: hidden;
+}
+.volume-level {
+  cursor: pointer;
+  width: 5px;
+  height: 50px;
+  z-index: auto;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.4);
+  transform: translateX(12px) translateY(-55px);
+}
+.flex-line {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: -55px;
+}
 .info {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.timelinedot {
+.timelinedot,
+.volume-level-dot {
   width: 10px;
   height: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.68);
   z-index: auto;
   position: relative;
-  top: -3px;
+  top: -5px;
   left: 0px;
+}
+.volume-level-dot {
+  top: var(--volume, -5px) !important;
+  left: -2.25px !important;
 }
 </style>

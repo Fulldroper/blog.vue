@@ -3,11 +3,13 @@
     <div v-if="playlist && playlist.length && playlist.length > 0">
       <div v-for="(track, id) in playlist" :key="id">
         <AudioPlayer
-          @end="trackEnded"
+          @end="nextTrack"
+          @play="stopAnother"
+          @changeVolume="changeVolume"
+          v-bind:volume="volume"
           :src="track.src"
           :id="id"
           :title="track.title"
-          :isPlaying="playlist[id].isPlaying"
           :ref="`audio${id}`"
         />
       </div>
@@ -20,7 +22,7 @@ import AudioPlayer from "./AudioPlayer.vue";
 export default {
   data() {
     return {
-      red: {},
+      volume: 1,
     };
   },
   props: {
@@ -35,9 +37,15 @@ export default {
     AudioPlayer,
   },
   methods: {
-    trackEnded(id) {
-      this.playlist[id].isPlaying = false;
-      this.nextTrack(id);
+    stopAnother(id) {
+      for (let i = 0; i < this.playlist.length; i++) {
+        if (i !== id) {
+          this.$refs[`audio${i}`][0].stop();
+        }
+      }
+    },
+    changeVolume(num) {
+      this.volume = num;
     },
     nextTrack(id) {
       if (this.playlist.length - 1 > id) {
