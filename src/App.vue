@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-for="(post, id) in PostList" class="container-center" :key="id">
+    <!-- <div v-for="(post, id) in PostList" class="container-center" :key="id">
       <Post :data="post" />
-    </div>
+    </div> -->
   </div>
 </template>
 

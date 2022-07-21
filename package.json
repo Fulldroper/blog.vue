@@ -12,7 +12,8 @@
     "pull": "git pull github master"
   },
   "dependencies": {
-    "vue": "^2.5.11"
+    "vue": "^2.5.11",
+    "vue-router": "^3.5.4"
   },
   "browserslist": [
     "> 1%",
