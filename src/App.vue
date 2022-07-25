@@ -1,17 +1,8 @@
 <template>
-  <div>
-    <div @click="changePage('/1')">page 1</div>
-    <div @click="changePage('/auth')">page 2</div>
-
-    <BrowserView :hook.sync="page" />
-    <!-- <div v-for="(post, id) in PostList" class="container-center" :key="id">
-      <Post :data="post" />
-    </div> -->
-  </div>
+  <BrowserView @followpage="changePage" :hook.sync="page" />
 </template>
 
 <script>
-import Post from "./components/Post.vue";
 import BrowserView from "./components/BrowserView.vue";
 
 export default {
@@ -22,7 +13,7 @@ export default {
     };
   },
   components: {
-    Post, BrowserView
+    BrowserView
   },
   methods:{
     changePage(val){
