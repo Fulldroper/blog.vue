@@ -5,7 +5,7 @@
       <video :src="src" controls></video>
     </div>
     <div v-else>
-      <img :src="src" :alt="title" />
+      <img :src="src" loading="lazy" :alt="title" />
     </div>
   </div>
 </template>

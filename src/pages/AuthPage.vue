@@ -19,13 +19,13 @@
 
         <div>
           <div class="small input-text">Email</div>
-          <input class="input disable-select" style="margin-bottom:24px;" placeholder="username@email.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" type="email">
+          <input @change="validate" class="input disable-select" style="margin-bottom:24px;" placeholder="username@email.com" type="email">
           <div class="small input-text" >Password</div>
-          <input class="input disable-select" placeholder="Password" type="password">
+          <input @change="validate" class="input disable-select" placeholder="Password" type="password">
           <div class="forgot" @click="changePage('/restore')">
             Forgot password?
           </div>
-          <div class="btn">
+          <div class="btn" ref="btn">
             Sing In
           </div>
           <div class="create">
@@ -42,8 +42,8 @@
         </div>
         <div>
           <div class="small input-text">Email</div>
-          <input class="input disable-select" style="margin-bottom:24px;" placeholder="username@email.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" type="email">
-          <div class="btn">Continue</div>
+          <input @change="validate" class="input disable-select" style="margin-bottom:24px;" placeholder="username@email.com" type="email">
+          <div class="btn" ref="btn">Continue</div>
           <div class="forgot">
             <div @click="changePage('/auth')">Go back to the sign in page</div>
           </div>
@@ -65,16 +65,16 @@
         </div>
         <div>
           <div class="small input-text">Username</div>
-          <input class="input disable-select" style="margin-bottom:24px;" placeholder="username" type="text">
-          <div class="small input-text">Phone</div>
-          <input class="input disable-select" style="margin-bottom:24px;" placeholder="123-456-7890" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" type="tel">
+          <input @change="validate" class="input disable-select" style="margin-bottom:24px;" placeholder="username" type="text">
+          <!-- <div class="small input-text">Phone</div>
+          <input class="input disable-select" style="margin-bottom:24px;" placeholder="123-456-7890" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" type="tel"> -->
           <div class="small input-text">Email</div>
-          <input class="input disable-select" style="margin-bottom:24px;" placeholder="username@email.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" type="email">
+          <input @change="validate" class="input disable-select" style="margin-bottom:24px;" placeholder="username@email.com" type="email">
           <div class="small input-text">Password</div>
-          <input class="input disable-select" style="margin-bottom:24px;" placeholder="Password" type="password">
+          <input @change="validate" class="input disable-select" style="margin-bottom:24px;" placeholder="Password" type="password">
           <div class="small input-text" >Repeat password</div>
-          <input class="input disable-select" placeholder="Password" type="password">
-          <div class="btn">
+          <input @change="validate" class="input disable-select" placeholder="Password" type="password">
+          <div class="btn" ref="btn">
             Sing Up
           </div>
           <div class="forgot">
@@ -89,16 +89,46 @@
 
 <script>
 export default {
+  data() {
+    return {
+      isBlockedAccept: false
+    }
+  },
   props: {
     type: {
       default: "auth",
       type: String
     }
-  },
+  },  
   methods: {
     changePage(val) {
       this.$emit("followpage", val)
-    }
+    },
+    isValidUsername(name){
+      return true
+    },
+    toggleBlockEnter(bool){
+      this.isBlockedAccept = bool
+      bool ? this.$refs.btn.classList.remove('invalid-btn') : this.$refs.btn.classList.add('invalid-btn')
+    },
+    validate(e) {
+      const el = e.target
+      const validator = {
+        "email": /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        "text": /^(?=[a-zA-Z0-9._]{8,16}$)(?!.*[_.]{2})[^_.].*[^_.]$/,
+        "password": /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,32}$/
+      }
+      if (validator[el.type].test(el.value)) {
+            el.classList.contains("invalid") && el.classList.remove("invalid")
+            el.classList.add("valid")
+            this.toggleBlockEnter(true)
+          } else {
+            el.classList.contains("valid") && el.classList.remove("valid")
+            el.classList.add("invalid")
+            this.toggleBlockEnter(false)
+      }
+      console.log(e.target.checkValidity());
+    },
   }
 }
 </script>
@@ -111,7 +141,7 @@ button:focus {
     outline: none;
 }
 .invalid-btn {
-  cursor: no-drop;
+  cursor: no-drop !important;
   opacity: 0.3;
 }
 .create {
@@ -167,8 +197,11 @@ button:focus {
   padding-right: 10px;
   margin-top: 3px;
 }
-input:invalid {
+input:invalid, .invalid {
   border: solid red 2px;
+}
+.valid {
+  border: solid rgb(18, 168, 28) 2px;
 }
 .input-text {
   font-size: 14px !important;

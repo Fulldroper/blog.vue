@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <div>
-        <img class="shadow" :src="avatar" />
+        <img class="shadow" loading="lazy" :src="avatar" />
       </div>
       <div class="shadow background noselect">
         {{ nickname }}
